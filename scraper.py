@@ -261,8 +261,8 @@ def _rows_from_resource(url):
     raw = requests.get(url, headers=headers, timeout=30).content
     low = url.lower()
 
-    # XLSX（Excel）
-    if low.endswith(".xlsx") or low.endswith(".xls"):
+    # XLSX（新しいExcel形式）
+    if low.endswith(".xlsx"):
         try:
             import openpyxl
         except ImportError:
@@ -277,6 +277,27 @@ def _rows_from_resource(url):
         out = []
         for r in rows[1:]:
             out.append({header[i]: r[i] for i in range(min(len(header), len(r)))})
+        return out
+
+    # XLS（旧Excel形式）
+    if low.endswith(".xls"):
+        try:
+            import xlrd
+        except ImportError:
+            print(f"[skip] xlrd 未導入のため XLS を読めません: {url}")
+            return []
+        try:
+            book = xlrd.open_workbook(file_contents=raw)
+            sh = book.sheet_by_index(0)
+        except Exception as e:
+            print(f"[skip] XLS を開けません（{e}）: {url}")
+            return []
+        if sh.nrows == 0:
+            return []
+        header = [str(sh.cell_value(0, c)).strip() for c in range(sh.ncols)]
+        out = []
+        for r in range(1, sh.nrows):
+            out.append({header[c]: sh.cell_value(r, c) for c in range(sh.ncols)})
         return out
 
     # CSV（自治体は Shift_JIS が多いので UTF-8 と両対応）
@@ -390,12 +411,17 @@ def discover_bodik_event_datasets(pref_prefixes, max_pages=6):
 CSV_SOURCES = [
 ]
 
-# BODIK 自動発見の対象にする都道府県コード（上2桁）。福岡県 = "40"。
-# 増やせば全国に拡大できる（例: ["40","41","42"] で福岡・佐賀・長崎）。
-BODIK_PREF_PREFIXES = ["40"]
+# BODIK 自動発見の対象にする都道府県コード（上2桁）。
+# 全国47都道府県を対象にしています。実行時間を短くしたい場合は
+# 一部だけ（例: ["40"] で福岡のみ）に絞ってください。
+BODIK_PREF_PREFIXES = [
+    "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16",
+    "17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32",
+    "33","34","35","36","37","38","39","40","41","42","43","44","45","46","47",
+]
 
 # オープンデータから取り込む対象の日付範囲（今日〜N日先）。過去や遠い先は捨てる。
-ODS_WINDOW_DAYS = 3650
+ODS_WINDOW_DAYS = 45
 
 
 def collect_from_open_data():

@@ -421,7 +421,7 @@ BODIK_PREF_PREFIXES = [
 ]
 
 # オープンデータから取り込む対象の日付範囲（今日〜N日先）。過去や遠い先は捨てる。
-ODS_WINDOW_DAYS = 45
+ODS_WINDOW_DAYS = 120
 
 
 def collect_from_open_data():

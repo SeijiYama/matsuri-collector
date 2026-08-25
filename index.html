@@ -1,9 +1,12 @@
+
+
+Index · HTML
 <!doctype html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>祭り・フェス検索 — 全国のイベントを日付・地域で絞り込む</title>
+<title>祭り・イベント検索 — 全国のイベントを日付・地域・ジャンルで探す</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
@@ -18,328 +21,361 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{
-    font-family:var(--body); color:var(--ink); background:var(--bg);
-    -webkit-font-smoothing:antialiased; line-height:1.6;
-  }
+  body{font-family:var(--body); color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; line-height:1.6}
   a{color:inherit}
-
-  /* ---- header ---- */
-  header{
-    background:
-      radial-gradient(120% 100% at 50% -20%, #1c264d 0%, #141a34 55%, #10152b 100%);
-    color:#f4f2ea; padding:34px 20px 26px;
-  }
-  .wrap{max-width:920px; margin:0 auto}
-  .eyebrow{
-    font-size:12px; letter-spacing:.32em; text-transform:none;
-    color:#c9b47a; font-weight:700; margin:0 0 8px;
-  }
-  h1{
-    font-family:var(--display); font-weight:800; letter-spacing:.02em;
-    font-size:clamp(26px,5vw,40px); margin:0; line-height:1.2;
-  }
+ 
+  header{background:radial-gradient(120% 100% at 50% -20%, #1c264d 0%, #141a34 55%, #10152b 100%); color:#f4f2ea; padding:30px 20px 22px}
+  .wrap{max-width:1000px; margin:0 auto}
+  .eyebrow{font-size:12px; letter-spacing:.32em; color:#c9b47a; font-weight:700; margin:0 0 8px}
+  h1{font-family:var(--display); font-weight:800; letter-spacing:.02em; font-size:clamp(24px,4.4vw,36px); margin:0; line-height:1.2}
   h1 .accent{color:#f0a93a}
-  .tagline{margin:10px 0 0; color:#b9c0d6; font-size:14px}
-  /* 提灯（ちょうちん）の列＝このページの signature */
-  .lanterns{display:flex; gap:14px; align-items:center; margin:18px 0 0}
+  .tagline{margin:9px 0 0; color:#b9c0d6; font-size:14px}
+  .lanterns{display:flex; gap:14px; align-items:center; margin:16px 0 0}
   .lanterns::before,.lanterns::after{content:""; height:1px; flex:1; background:linear-gradient(90deg,transparent,#3a4468)}
   .lantern{width:9px; height:12px; border-radius:50% 50% 45% 45%; background:var(--shu); box-shadow:0 0 10px rgba(224,58,48,.6); flex:none}
   .lantern:nth-child(2n){background:var(--amber); box-shadow:0 0 10px rgba(240,169,58,.55)}
-
-  /* ---- filter bar ---- */
-  .filters{
-    position:sticky; top:0; z-index:5;
-    background:rgba(236,238,243,.92); backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);
-  }
-  .filters .wrap{
-    display:grid; gap:10px 12px; padding:14px 20px;
-    grid-template-columns:repeat(4, minmax(0,1fr)) auto;
-  }
+ 
+  .tabs{display:flex; gap:6px; max-width:1000px; margin:0 auto; padding:0 20px; transform:translateY(14px)}
+  .tab{font-family:var(--body); font-weight:700; font-size:14px; color:#c3cae0; background:#1a2140; border:1px solid #2b355e; border-bottom:none; border-radius:10px 10px 0 0; padding:10px 18px; cursor:pointer}
+  .tab.active{color:var(--ink); background:var(--bg); border-color:var(--line)}
+ 
+  .filters{background:rgba(236,238,243,.96); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:6}
+  .filters .wrap{display:grid; gap:10px 12px; padding:16px 20px 14px; grid-template-columns:repeat(4, minmax(0,1fr)) auto}
   .field{display:flex; flex-direction:column; gap:4px; min-width:0}
   .field.kw{grid-column:1 / -2}
   .field label{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.04em}
-  select,input[type="date"],input[type="search"]{
-    font-family:var(--body); font-size:14px; color:var(--ink);
-    background:var(--paper); border:1px solid var(--line); border-radius:9px;
-    padding:9px 10px; width:100%; height:40px; appearance:none;
-  }
-  input[type="search"]{appearance:auto}
+  select,input[type="search"]{font-family:var(--body); font-size:14px; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:9px; padding:9px 10px; width:100%; height:40px}
   select:focus-visible,input:focus-visible{outline:2px solid var(--ai); outline-offset:1px; border-color:var(--ai)}
-  .reset{
-    align-self:end; height:40px; padding:0 14px; white-space:nowrap;
-    font-family:var(--body); font-weight:700; font-size:13px;
-    color:var(--ai); background:var(--ai-soft); border:1px solid transparent;
-    border-radius:9px; cursor:pointer;
-  }
+  .reset{align-self:end; height:40px; padding:0 14px; white-space:nowrap; font-family:var(--body); font-weight:700; font-size:13px; color:var(--ai); background:var(--ai-soft); border:1px solid transparent; border-radius:9px; cursor:pointer}
   .reset:hover{background:#dde2f4}
-
-  /* ---- results ---- */
-  main{max-width:920px; margin:0 auto; padding:20px 20px 64px}
-  .count{font-size:13px; color:var(--muted); margin:6px 2px 16px}
+ 
+  main{max-width:1000px; margin:0 auto; padding:18px 20px 64px}
+  .count{font-size:13px; color:var(--muted); margin:4px 2px 14px}
   .count b{color:var(--ink); font-weight:700}
-
-  .banner{
-    display:flex; gap:10px; align-items:flex-start;
-    background:var(--amber-soft); border:1px solid #eedcae; color:#7a5a12;
-    border-radius:10px; padding:12px 14px; margin:0 0 18px; font-size:13px;
-  }
+  .banner{display:flex; gap:10px; align-items:flex-start; background:var(--amber-soft); border:1px solid #eedcae; color:#7a5a12; border-radius:10px; padding:12px 14px; margin:0 0 16px; font-size:13px}
   .banner code{background:#fff5e0; padding:1px 5px; border-radius:4px; font-size:12px}
-
+ 
   .list{display:flex; flex-direction:column; gap:12px}
-  .card{
-    display:grid; grid-template-columns:74px 1fr; gap:16px;
-    background:var(--paper); border:1px solid var(--line); border-radius:14px;
-    box-shadow:var(--shadow); overflow:hidden; transition:transform .18s ease, box-shadow .18s ease;
-  }
-  .card:hover{transform:translateY(-2px); box-shadow:0 2px 4px rgba(20,26,55,.06),0 14px 30px rgba(20,26,55,.10)}
-  /* 木札（きふだ）風の日付タグ */
-  .datetag{
-    background:linear-gradient(180deg,var(--shu),#b52e26); color:#fff;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:14px 6px; text-align:center;
-  }
+  .card{display:grid; grid-template-columns:74px 1fr; gap:16px; background:var(--paper); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
+  .datetag{color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 6px; text-align:center}
   .datetag .m{font-size:12px; font-weight:700; opacity:.9}
   .datetag .d{font-family:var(--display); font-weight:800; font-size:30px; line-height:1}
   .datetag .w{font-size:11px; margin-top:3px; opacity:.85}
   .datetag .range{font-size:10px; margin-top:6px; opacity:.9; border-top:1px solid rgba(255,255,255,.35); padding-top:4px}
-  .body{padding:14px 16px 15px; min-width:0}
-  .card h2{font-family:var(--display); font-weight:700; font-size:18px; margin:0 0 6px; line-height:1.35}
-  .meta{display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:0 0 8px}
+  .cbody{padding:13px 16px 14px; min-width:0}
+  .card h2{font-family:var(--display); font-weight:700; font-size:17px; margin:0 0 6px; line-height:1.35}
+  .meta{display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:0 0 7px}
   .place{font-size:13px; color:var(--muted)}
-  .chip{font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; line-height:1.5}
-  .chip.cat{background:var(--ai-soft); color:var(--ai)}
-  .chip.reg{background:var(--shu-soft); color:var(--shu)}
-  .desc{font-size:13.5px; color:#31384f; margin:0}
-  .src{display:inline-block; margin-top:9px; font-size:12px; color:var(--ai); font-weight:700; text-decoration:none}
+  .chip{font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; line-height:1.5; color:#fff}
+  .chip.reg{background:var(--ai-soft); color:var(--ai)}
+  .desc{font-size:13px; color:#31384f; margin:0}
+  .src{display:inline-block; margin-top:8px; font-size:12px; color:var(--ai); font-weight:700; text-decoration:none}
   .src:hover{text-decoration:underline}
-
-  .empty,.loading{
-    text-align:center; padding:48px 20px; color:var(--muted);
-    background:var(--paper); border:1px dashed var(--line); border-radius:14px;
-  }
+ 
+  .calhead{display:flex; align-items:center; justify-content:space-between; margin:2px 0 12px}
+  .calnav{display:flex; gap:8px; align-items:center}
+  .navbtn{width:38px; height:38px; border-radius:9px; border:1px solid var(--line); background:var(--paper); font-size:16px; cursor:pointer; color:var(--ink)}
+  .navbtn:hover{background:var(--ai-soft)}
+  .caltitle{font-family:var(--display); font-weight:700; font-size:20px; min-width:170px; text-align:center}
+  .today-btn{height:38px; padding:0 14px; border-radius:9px; border:1px solid var(--line); background:var(--paper); font-weight:700; font-size:13px; cursor:pointer}
+  .legend{display:flex; flex-wrap:wrap; gap:6px 12px; margin:0 0 12px; font-size:12px; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:5px}
+  .dot{width:9px; height:9px; border-radius:50%; flex:none}
+ 
+  .weekbar{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:6px}
+  .weekbar div{text-align:center; font-size:12px; font-weight:700; color:var(--muted); padding:4px 0}
+  .weekbar div:first-child{color:var(--shu)} .weekbar div:last-child{color:var(--ai)}
+  .grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+  .cell{min-height:96px; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:6px 6px 7px; cursor:pointer; display:flex; flex-direction:column; gap:3px; overflow:hidden}
+  .cell:hover{border-color:var(--ai)}
+  .cell.other{background:#f6f7fa; color:#aab0c2}
+  .cell.today{border-color:var(--shu); box-shadow:0 0 0 1px var(--shu) inset}
+  .cell.sel{border-color:var(--ai); box-shadow:0 0 0 2px var(--ai) inset}
+  .cell .dnum{font-weight:700; font-size:13px}
+  .cell .cnt{font-size:10px; font-weight:700; color:#fff; background:var(--ai); border-radius:999px; padding:0 6px}
+  .cell .ev{display:flex; align-items:center; gap:4px; font-size:11px; line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .cell .more{font-size:10px; color:var(--muted); margin-top:auto}
+ 
+  .weekgrid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+  .wcol{background:var(--paper); border:1px solid var(--line); border-radius:10px; min-height:340px; display:flex; flex-direction:column}
+  .wcol.today{border-color:var(--shu)}
+  .wcol h3{margin:0; font-size:12px; font-weight:700; text-align:center; padding:8px 4px; border-bottom:1px solid var(--line); color:var(--muted)}
+  .wcol .wc-body{padding:6px; display:flex; flex-direction:column; gap:5px; overflow:auto}
+  .wev{font-size:11px; line-height:1.35; padding:5px 7px; border-radius:7px; background:#f6f7fa; border-left:3px solid var(--ai); cursor:pointer}
+  .wev:hover{background:var(--ai-soft)}
+ 
+  .daydetail{margin-top:18px}
+  .daydetail h2{font-family:var(--display); font-size:18px; margin:0 0 10px}
+  .empty{text-align:center; padding:40px 20px; color:var(--muted); background:var(--paper); border:1px dashed var(--line); border-radius:14px}
   .empty h3{font-family:var(--display); color:var(--ink); margin:0 0 6px; font-size:18px}
-
-  @media (max-width:640px){
+  .hidden{display:none}
+ 
+  @media (max-width:720px){
     .filters .wrap{grid-template-columns:1fr 1fr}
     .field.kw{grid-column:1 / -1}
     .reset{grid-column:1 / -1}
-    .card{grid-template-columns:60px 1fr; gap:12px}
-    .datetag .d{font-size:24px}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .card{transition:none}
+    .cell{min-height:70px}
+    .cell .ev{display:none}
+    .weekgrid{grid-template-columns:1fr}
+    .wcol{min-height:auto}
   }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <p class="eyebrow">全国 祭り・フェス</p>
-    <h1>行事を、<span class="accent">日付</span>と<span class="accent">地域</span>で探す</h1>
-    <p class="tagline">観光に使える祭り・フェス・グルメ・花火の情報を、条件でしぼり込み。</p>
-    <div class="lanterns" aria-hidden="true">
-      <span class="lantern"></span><span class="lantern"></span><span class="lantern"></span>
-      <span class="lantern"></span><span class="lantern"></span>
-    </div>
+    <p class="eyebrow">全国 祭り・イベント</p>
+    <h1>行事を、<span class="accent">日付</span>・<span class="accent">地域</span>・<span class="accent">ジャンル</span>で探す</h1>
+    <p class="tagline">一覧・月カレンダー・週カレンダーで、全国のイベントを俯瞰。</p>
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
   </div>
 </header>
-
+ 
+<div class="tabs" role="tablist">
+  <button class="tab active" data-view="list" role="tab">一覧</button>
+  <button class="tab" data-view="month" role="tab">月カレンダー</button>
+  <button class="tab" data-view="week" role="tab">週カレンダー</button>
+</div>
+ 
 <div class="filters">
   <div class="wrap">
-    <div class="field">
-      <label for="pref">都道府県</label>
-      <select id="pref"><option value="">すべて</option></select>
-    </div>
-    <div class="field">
-      <label for="cat">種類</label>
-      <select id="cat"><option value="">すべて</option></select>
-    </div>
-    <div class="field">
-      <label for="from">開始日（この日以降）</label>
-      <input type="date" id="from">
-    </div>
-    <div class="field">
-      <label for="to">開始日（この日まで）</label>
-      <input type="date" id="to">
-    </div>
-    <div class="field kw">
-      <label for="kw">キーワード（イベント名・内容・市町村）</label>
-      <input type="search" id="kw" placeholder="例：花火、おどり、帯広 …">
-    </div>
+    <div class="field"><label for="region">地域</label><select id="region"><option value="">すべて</option></select></div>
+    <div class="field"><label for="pref">都道府県</label><select id="pref"><option value="">すべて</option></select></div>
+    <div class="field"><label for="city">市区町村</label><select id="city"><option value="">すべて</option></select></div>
+    <div class="field"><label for="genre">ジャンル</label><select id="genre"><option value="">すべて</option></select></div>
+    <div class="field kw"><label for="kw">キーワード（イベント名・内容・市区町村）</label><input type="search" id="kw" placeholder="例：花火、おどり、マルシェ …"></div>
     <button class="reset" id="reset" type="button">条件をクリア</button>
   </div>
 </div>
-
+ 
 <main>
-  <p class="count" id="count"></p>
   <div id="banner"></div>
-  <div id="results" class="list" aria-live="polite"></div>
+  <p class="count" id="count"></p>
+ 
+  <section id="view-list"></section>
+ 
+  <section id="view-month" class="hidden">
+    <div class="calhead">
+      <div class="calnav"><button class="navbtn" id="m-prev">‹</button><div class="caltitle" id="m-title"></div><button class="navbtn" id="m-next">›</button></div>
+      <button class="today-btn" id="m-today">今日</button>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="weekbar"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div>
+    <div class="grid" id="m-grid"></div>
+    <div class="daydetail" id="m-detail"></div>
+  </section>
+ 
+  <section id="view-week" class="hidden">
+    <div class="calhead">
+      <div class="calnav"><button class="navbtn" id="w-prev">‹</button><div class="caltitle" id="w-title"></div><button class="navbtn" id="w-next">›</button></div>
+      <button class="today-btn" id="w-today">今週</button>
+    </div>
+    <div class="legend" id="legend-w"></div>
+    <div class="weekgrid" id="w-grid"></div>
+    <div class="daydetail" id="w-detail"></div>
+  </section>
 </main>
-
+ 
 <script type="module">
-/* ======================================================================
-   設定：Supabase の情報を入れてください（web/index.html のここだけ）
-   - SUPABASE_URL       : プロジェクトの URL
-   - SUPABASE_ANON_KEY  : anon（公開用）キー ※service_role は絶対に貼らない
-   未設定のままでも、下のデモデータで見た目を確認できます。
-   ====================================================================== */
 const SUPABASE_URL = 'https://lvriwfdhwvmerqzkykda.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_Ab8PWTFJNqq7TZQlJbmWbw_0HuApiaD';
-
-const isConfigured =
-  SUPABASE_URL.startsWith('http') && !SUPABASE_ANON_KEY.startsWith('YOUR_');
-
-/* Supabase ライブラリは「接続設定がある時だけ」読み込む（デモは外部JS不要） */
+ 
+const isConfigured = SUPABASE_URL.startsWith('http') && !SUPABASE_ANON_KEY.startsWith('YOUR_');
 let _client = null;
 async function getClient(){
-  if (!isConfigured) return null;
-  if (!_client){
-    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
-    _client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  }
+  if(!isConfigured) return null;
+  if(!_client){ const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2'); _client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
   return _client;
 }
-
-/* デモデータ（Supabase 未設定時のプレビュー用） */
+ 
+const GENRE_COLORS = {
+  "祭り・伝統行事":"#d43a30","音楽・フェス":"#3a4fb0","花火":"#e0961b","グルメ・物産":"#2f8f6b",
+  "アート・展示":"#8a5cc4","スポーツ":"#1f9bb0","映画・演劇":"#c0508f","季節・自然":"#6a9a3a",
+  "選挙":"#5b6b8c","その他":"#8a8f9c"
+};
+const gcolor = g => GENRE_COLORS[g] || GENRE_COLORS["その他"];
+ 
 const SAMPLE = [
-  {title:"越中八尾 おわら風の盆", start_date:"2026-09-01", end_date:"2026-09-03", prefecture:"富山県", city:"富山市", region:"北陸", category:"民謡行事", description:"数千のぼんぼりが灯る八尾の坂の町を、編み笠に浴衣姿の踊り手が三味線・胡弓・太鼓に合わせて流し歩く叙情的な民謡行事。", source_url:"https://www.city.toyama.lg.jp/"},
-  {title:"郡上おどり（おどり納め）", start_date:"2026-09-05", end_date:"2026-09-05", prefecture:"岐阜県", city:"郡上市", region:"中部", category:"盆踊り", description:"日本三大盆踊りのひとつ。全31夜の締めくくり。観客も輪に加わって全10曲を踊る。ユネスコ無形文化遺産。", source_url:"https://www.gujohachiman.com/kanko/"},
-  {title:"とかちマルシェ", start_date:"2026-09-04", end_date:"2026-09-06", prefecture:"北海道", city:"帯広市", region:"北海道", category:"グルメ", description:"十勝最大級の食と音楽の祭典。十勝産食材の店が130店以上、多くが500円以下。入場無料。", source_url:"https://www.city.obihiro.hokkaido.jp/"},
-  {title:"Slow LIVE ’26 in 池上本門寺", start_date:"2026-09-04", end_date:"2026-09-06", prefecture:"東京都", city:"大田区", region:"関東", category:"音楽フェス", description:"「大人のミニフェス」をテーマにした野外ライブ3日間。アコースティック編成中心で音楽と食を楽しむ。", source_url:"https://www.red-hot.ne.jp/slow/"},
-  {title:"開口神社 八朔祭", start_date:"2026-09-05", end_date:"2026-09-06", prefecture:"大阪府", city:"堺市", region:"関西", category:"秋祭り", description:"堺の古社の祭礼。豪華な装飾のふとん太鼓の担ぎ出しが見どころ。境内周辺には多くの露店。", source_url:"https://matcha-jp.com/jp/20105"},
-  {title:"夏まつりあさくら", start_date:"2026-09-05", end_date:"2026-09-05", prefecture:"福岡県", city:"朝倉市", region:"九州", category:"花火大会", description:"約1,000発の花火が上がり、フィナーレは市内唯一の一尺玉10連発。約100の露店が並ぶ。", source_url:"https://www.city.asakura.lg.jp/"},
-  {title:"角館祭りのやま行事", start_date:"2026-09-07", end_date:"2026-09-09", prefecture:"秋田県", city:"仙北市", region:"東北", category:"曳山祭り", description:"約400年の歴史を持つ祭礼。ユネスコ無形文化遺産。曳山同士が激突する「やまぶっつけ」が見どころ。", source_url:"https://www.city.semboku.akita.jp/"},
+  {title:"越中八尾 おわら風の盆",start_date:"2026-09-01",end_date:"2026-09-03",region:"北陸",prefecture:"富山県",city:"富山市",genre:"祭り・伝統行事",category:"民謡行事",description:"叙情的な民謡行事。",source_url:"https://www.city.toyama.lg.jp/"},
+  {title:"とかちマルシェ",start_date:"2026-09-04",end_date:"2026-09-06",region:"北海道",prefecture:"北海道",city:"帯広市",genre:"グルメ・物産",category:"グルメ",description:"十勝の食と音楽。",source_url:"https://www.city.obihiro.hokkaido.jp/"},
+  {title:"全国花火競技大会「大曲の花火」",start_date:"2026-08-29",end_date:"2026-08-29",region:"東北",prefecture:"秋田県",city:"大仙市",genre:"花火",category:"花火大会",description:"日本三大花火大会。",source_url:"https://www.omagari-hanabi.com/"},
+  {title:"SWEET LOVE SHOWER 2026",start_date:"2026-08-28",end_date:"2026-08-30",region:"甲信越",prefecture:"山梨県",city:"山中湖村",genre:"音楽・フェス",category:"音楽フェス",description:"山中湖畔の野外フェス。",source_url:"https://2026.sweetloveshower.com/"},
+  {title:"沖縄全島エイサーまつり",start_date:"2026-09-04",end_date:"2026-09-06",region:"沖縄",prefecture:"沖縄県",city:"沖縄市",genre:"祭り・伝統行事",category:"エイサー",description:"旧盆明けの一大行事。",source_url:"https://www.zentoeisa.com/"},
+  {title:"角館祭りのやま行事",start_date:"2026-09-07",end_date:"2026-09-09",region:"東北",prefecture:"秋田県",city:"仙北市",genre:"祭り・伝統行事",category:"曳山祭り",description:"ユネスコ無形文化遺産。",source_url:"https://www.city.semboku.akita.jp/"},
 ];
-
-const el = (id) => document.getElementById(id);
+ 
+const el = id => document.getElementById(id);
 const WD = ['日','月','火','水','木','金','土'];
-
-/* --- 都道府県・種類のプルダウンを実データから作る --- */
-async function loadOptions(){
-  let rows;
-  if (isConfigured){
-    const c = await getClient();
-    const { data } = await c.from('events').select('prefecture,category');
-    rows = data || [];
-  } else {
-    rows = SAMPLE;
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const todayISO = iso(new Date());
+const parseD = s => new Date(s+'T00:00:00');
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+ 
+let ALL = [];
+let view = 'list';
+let monthCursor = new Date(); monthCursor.setDate(1);
+let weekStart = startOfWeek(new Date());
+let selDay = null;
+ 
+function startOfWeek(d){ const x=new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate()-x.getDay()); return x; }
+ 
+async function loadAll(){
+  if(!isConfigured){ ALL = SAMPLE.slice(); return; }
+  const c = await getClient();
+  const from = new Date(); from.setDate(from.getDate()-31);
+  const to   = new Date(); to.setDate(to.getDate()+400);
+  const { data, error } = await c.from('events').select('*')
+    .gte('end_date', iso(from)).lte('start_date', iso(to))
+    .order('start_date',{ascending:true}).limit(5000);
+  if(error) throw error;
+  ALL = data || [];
+}
+ 
+function activeFilters(){
+  return { region:el('region').value, pref:el('pref').value, city:el('city').value, genre:el('genre').value, kw:el('kw').value.trim() };
+}
+function pass(e,f){
+  if(f.region && e.region!==f.region) return false;
+  if(f.pref && e.prefecture!==f.pref) return false;
+  if(f.city && e.city!==f.city) return false;
+  if(f.genre && e.genre!==f.genre) return false;
+  if(f.kw){ const hay=`${e.title||''}${e.description||''}${e.city||''}`; if(!hay.includes(f.kw)) return false; }
+  return true;
+}
+function eventsOnDay(dayISO,f){ return ALL.filter(e => e.start_date<=dayISO && (e.end_date||e.start_date)>=dayISO && pass(e,f)); }
+ 
+function buildFilterOptions(){
+  const regions=[...new Set(ALL.map(e=>e.region).filter(Boolean))].sort();
+  const genres =[...new Set(ALL.map(e=>e.genre).filter(Boolean))];
+  const genreOrder=Object.keys(GENRE_COLORS);
+  genres.sort((a,b)=>genreOrder.indexOf(a)-genreOrder.indexOf(b));
+  el('region').insertAdjacentHTML('beforeend', regions.map(r=>`<option>${esc(r)}</option>`).join(''));
+  el('genre').insertAdjacentHTML('beforeend', genres.map(g=>`<option>${esc(g)}</option>`).join(''));
+  refreshPrefOptions(); refreshCityOptions();
+}
+function refreshPrefOptions(){
+  const region=el('region').value;
+  const list=[...new Set(ALL.filter(e=>!region||e.region===region).map(e=>e.prefecture).filter(Boolean))].sort();
+  el('pref').innerHTML='<option value="">すべて</option>'+list.map(p=>`<option>${esc(p)}</option>`).join('');
+}
+function refreshCityOptions(){
+  const region=el('region').value, pref=el('pref').value;
+  const list=[...new Set(ALL.filter(e=>(!region||e.region===region)&&(!pref||e.prefecture===pref)).map(e=>e.city).filter(Boolean))].sort();
+  el('city').innerHTML='<option value="">すべて</option>'+list.map(cc=>`<option>${esc(cc)}</option>`).join('');
+}
+ 
+function dateTag(e){
+  const d=parseD(e.start_date), m=d.getMonth()+1, day=d.getDate(), w=WD[d.getDay()];
+  let range=''; if(e.end_date && e.end_date!==e.start_date){ const en=parseD(e.end_date); range=`<span class="range">〜${en.getMonth()+1}/${en.getDate()}</span>`; }
+  return `<div class="datetag" style="background:linear-gradient(180deg,${gcolor(e.genre)},rgba(0,0,0,.18))"><span class="m">${m}月</span><span class="d">${day}</span><span class="w">(${w})</span>${range}</div>`;
+}
+function card(e){
+  const src=e.source_url?`<a class="src" href="${esc(e.source_url)}" target="_blank" rel="noopener">公式情報を見る →</a>`:'';
+  return `<article class="card">${dateTag(e)}<div class="cbody">
+    <h2>${esc(e.title)}</h2>
+    <div class="meta"><span class="place">${esc(e.prefecture||'')} ${esc(e.city||'')}</span>
+      ${e.genre?`<span class="chip" style="background:${gcolor(e.genre)}">${esc(e.genre)}</span>`:''}
+      ${e.category?`<span class="chip reg">${esc(e.category)}</span>`:''}</div>
+    ${e.description?`<p class="desc">${esc(e.description)}</p>`:''}${src}
+  </div></article>`;
+}
+ 
+function renderList(){
+  const f=activeFilters();
+  const rows=ALL.filter(e=>(e.end_date||e.start_date)>=todayISO && pass(e,f))
+                .sort((a,b)=> a.start_date<b.start_date?-1:(a.start_date>b.start_date?1:0));
+  el('count').innerHTML=`今日以降のイベント <b>${rows.length}</b> 件`;
+  el('view-list').innerHTML = rows.length ? `<div class="list">${rows.map(card).join('')}</div>`
+    : `<div class="empty"><h3>該当するイベントがありません</h3><p>条件をゆるめてみてください。</p></div>`;
+}
+ 
+function legendHTML(){ return Object.keys(GENRE_COLORS).map(g=>`<span><i class="dot" style="background:${GENRE_COLORS[g]}"></i>${g}</span>`).join(''); }
+ 
+function renderMonth(){
+  const f=activeFilters();
+  el('legend').innerHTML=legendHTML();
+  const y=monthCursor.getFullYear(), m=monthCursor.getMonth();
+  el('m-title').textContent=`${y}年 ${m+1}月`;
+  const first=new Date(y,m,1); const start=startOfWeek(first);
+  let html='';
+  for(let i=0;i<42;i++){
+    const d=new Date(start); d.setDate(start.getDate()+i); const di=iso(d);
+    const evs=eventsOnDay(di,f);
+    const other=d.getMonth()!==m?' other':''; const isToday=di===todayISO?' today':''; const isSel=di===selDay?' sel':'';
+    const chips=evs.slice(0,3).map(e=>`<div class="ev"><i class="dot" style="background:${gcolor(e.genre)}"></i>${esc(e.title)}</div>`).join('');
+    const more=evs.length>3?`<div class="more">＋${evs.length-3}件</div>`:'';
+    const cnt=evs.length?`<span class="cnt">${evs.length}</span>`:'';
+    html+=`<div class="cell${other}${isToday}${isSel}" data-day="${di}"><div style="display:flex;justify-content:space-between;align-items:center"><span class="dnum">${d.getDate()}</span>${cnt}</div>${chips}${more}</div>`;
   }
-  const prefs = [...new Set(rows.map(r=>r.prefecture).filter(Boolean))];
-  const cats  = [...new Set(rows.map(r=>r.category).filter(Boolean))];
-  for (const p of prefs){ el('pref').insertAdjacentHTML('beforeend', `<option>${p}</option>`); }
-  for (const c of cats){ el('cat').insertAdjacentHTML('beforeend', `<option>${c}</option>`); }
+  el('m-grid').innerHTML=html;
+  el('m-grid').querySelectorAll('.cell').forEach(c=>c.addEventListener('click',()=>{ selDay=c.dataset.day; renderMonth(); renderDayDetail('m-detail'); }));
+  const total=ALL.filter(e=>pass(e,f)).length;
+  el('count').innerHTML=`条件に一致 <b>${total}</b> 件（カレンダーは期間を自由に移動できます）`;
+  if(selDay) renderDayDetail('m-detail');
 }
-
-/* --- 絞り込み：Supabase 側でクエリ（未設定時はメモリ内で同等の絞り込み） --- */
-async function fetchFiltered(){
-  const pref = el('pref').value, cat = el('cat').value;
-  const from = el('from').value, to = el('to').value;
-  const kw = el('kw').value.trim();
-
-  if (isConfigured){
-    const c = await getClient();
-    let q = c.from('events').select('*');
-    if (pref) q = q.eq('prefecture', pref);
-    if (cat)  q = q.eq('category', cat);
-    if (from) q = q.gte('start_date', from);
-    if (to)   q = q.lte('start_date', to);
-    if (kw){
-      const s = kw.replace(/[(),.]/g,' ');   // or フィルタを壊す文字を除去
-      q = q.or(`title.ilike.%${s}%,description.ilike.%${s}%,city.ilike.%${s}%`);
-    }
-    q = q.order('start_date', { ascending:true });
-    const { data, error } = await q;
-    if (error) throw error;
-    return data;
+ 
+function renderWeek(){
+  const f=activeFilters();
+  el('legend-w').innerHTML=legendHTML();
+  const end=new Date(weekStart); end.setDate(weekStart.getDate()+6);
+  el('w-title').textContent=`${weekStart.getMonth()+1}/${weekStart.getDate()} 〜 ${end.getMonth()+1}/${end.getDate()}`;
+  let html='';
+  for(let i=0;i<7;i++){
+    const d=new Date(weekStart); d.setDate(weekStart.getDate()+i); const di=iso(d);
+    const evs=eventsOnDay(di,f);
+    const isToday=di===todayISO?' today':'';
+    const items=evs.map(e=>`<div class="wev" data-day="${di}" style="border-left-color:${gcolor(e.genre)}">${esc(e.title)}<br><span style="color:var(--muted)">${esc(e.prefecture||'')}${esc(e.city||'')}</span></div>`).join('') || `<div style="font-size:11px;color:var(--muted);padding:8px;text-align:center">—</div>`;
+    html+=`<div class="wcol${isToday}"><h3>${WD[d.getDay()]} ${d.getMonth()+1}/${d.getDate()}</h3><div class="wc-body">${items}</div></div>`;
   }
-
-  // デモモード
-  return SAMPLE.filter(r=>{
-    if (pref && r.prefecture!==pref) return false;
-    if (cat && r.category!==cat) return false;
-    if (from && r.start_date < from) return false;
-    if (to && r.start_date > to) return false;
-    if (kw){
-      const hay = `${r.title}${r.description}${r.city}`;
-      if (!hay.includes(kw)) return false;
-    }
-    return true;
-  }).sort((a,b)=> a.start_date < b.start_date ? -1 : 1);
+  el('w-grid').innerHTML=html;
+  el('w-grid').querySelectorAll('.wev').forEach(x=>x.addEventListener('click',()=>{ selDay=x.dataset.day; renderDayDetail('w-detail'); el('w-detail').scrollIntoView({behavior:'smooth',block:'start'}); }));
+  const total=ALL.filter(e=>pass(e,f)).length;
+  el('count').innerHTML=`条件に一致 <b>${total}</b> 件`;
 }
-
-function dateTag(r){
-  const d = new Date(r.start_date + 'T00:00:00');
-  const m = d.getMonth()+1, day = d.getDate(), w = WD[d.getDay()];
-  let range = '';
-  if (r.end_date && r.end_date !== r.start_date){
-    const e = new Date(r.end_date + 'T00:00:00');
-    range = `<span class="range">〜${e.getMonth()+1}/${e.getDate()}</span>`;
-  }
-  return `<div class="datetag"><span class="m">${m}月</span><span class="d">${day}</span><span class="w">(${w})</span>${range}</div>`;
+ 
+function renderDayDetail(target){
+  if(!selDay){ el(target).innerHTML=''; return; }
+  const f=activeFilters();
+  const evs=eventsOnDay(selDay,f).sort((a,b)=> a.start_date<b.start_date?-1:1);
+  const d=parseD(selDay);
+  el(target).innerHTML=`<h2>${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${WD[d.getDay()]}) のイベント <span style="color:var(--muted);font-size:14px">${evs.length}件</span></h2>`
+    + (evs.length?`<div class="list">${evs.map(card).join('')}</div>`:`<div class="empty"><p>この日のイベントはありません。</p></div>`);
 }
-
-function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
-function card(r){
-  const src = r.source_url ? `<a class="src" href="${esc(r.source_url)}" target="_blank" rel="noopener">公式情報を見る →</a>` : '';
-  const reg = r.region ? `<span class="chip reg">${esc(r.region)}</span>` : '';
-  return `<article class="card">
-    ${dateTag(r)}
-    <div class="body">
-      <h2>${esc(r.title)}</h2>
-      <div class="meta">
-        <span class="place">${esc(r.prefecture||'')} ${esc(r.city||'')}</span>
-        ${r.category?`<span class="chip cat">${esc(r.category)}</span>`:''}
-        ${reg}
-      </div>
-      ${r.description?`<p class="desc">${esc(r.description)}</p>`:''}
-      ${src}
-    </div>
-  </article>`;
+ 
+function switchView(v){
+  view=v;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  el('view-list').classList.toggle('hidden',v!=='list');
+  el('view-month').classList.toggle('hidden',v!=='month');
+  el('view-week').classList.toggle('hidden',v!=='week');
+  rerender();
 }
-
-async function render(){
-  el('results').innerHTML = `<div class="loading">読み込み中…</div>`;
-  try{
-    const rows = await fetchFiltered();
-    el('count').innerHTML = `該当 <b>${rows.length}</b> 件`;
-    if (!rows.length){
-      el('results').innerHTML = `<div class="empty"><h3>該当するイベントがありません</h3>
-        <p>条件をゆるめてみてください（都道府県や期間を「すべて」に戻すなど）。</p></div>`;
-      return;
-    }
-    el('results').innerHTML = rows.map(card).join('');
-  }catch(e){
-    el('results').innerHTML = `<div class="empty"><h3>読み込みに失敗しました</h3>
-      <p>Supabase の URL / anon キー、テーブルの公開設定（RLS）をご確認ください。</p></div>`;
-    console.error(e);
-  }
+function rerender(){ if(view==='list') renderList(); else if(view==='month') renderMonth(); else renderWeek(); }
+ 
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>switchView(t.dataset.view)));
+el('region').addEventListener('change',()=>{ refreshPrefOptions(); refreshCityOptions(); rerender(); });
+el('pref').addEventListener('change',()=>{ refreshCityOptions(); rerender(); });
+el('city').addEventListener('change',rerender);
+el('genre').addEventListener('change',rerender);
+let kwT; el('kw').addEventListener('input',()=>{ clearTimeout(kwT); kwT=setTimeout(rerender,220); });
+el('reset').addEventListener('click',()=>{ el('region').value='';el('pref').value='';el('city').value='';el('genre').value='';el('kw').value=''; refreshPrefOptions(); refreshCityOptions(); rerender(); });
+ 
+el('m-prev').addEventListener('click',()=>{ monthCursor.setMonth(monthCursor.getMonth()-1); renderMonth(); });
+el('m-next').addEventListener('click',()=>{ monthCursor.setMonth(monthCursor.getMonth()+1); renderMonth(); });
+el('m-today').addEventListener('click',()=>{ monthCursor=new Date(); monthCursor.setDate(1); selDay=todayISO; renderMonth(); });
+el('w-prev').addEventListener('click',()=>{ weekStart.setDate(weekStart.getDate()-7); renderWeek(); });
+el('w-next').addEventListener('click',()=>{ weekStart.setDate(weekStart.getDate()+7); renderWeek(); });
+el('w-today').addEventListener('click',()=>{ weekStart=startOfWeek(new Date()); renderWeek(); });
+ 
+if(!isConfigured){
+  el('banner').innerHTML=`<div class="banner"><span>🏮</span><div><b>デモデータを表示中です。</b> <code>index.html</code> の <code>SUPABASE_URL</code> と <code>SUPABASE_ANON_KEY</code> を設定すると実データに切り替わります。</div></div>`;
 }
-
-/* --- イベント配線 --- */
-let kwTimer;
-el('pref').addEventListener('change', render);
-el('cat').addEventListener('change', render);
-el('from').addEventListener('change', render);
-el('to').addEventListener('change', render);
-el('kw').addEventListener('input', ()=>{ clearTimeout(kwTimer); kwTimer = setTimeout(render, 250); });
-el('reset').addEventListener('click', ()=>{
-  el('pref').value=''; el('cat').value=''; el('from').value=''; el('to').value=''; el('kw').value='';
-  render();
-});
-
-if (!isConfigured){
-  el('banner').innerHTML = `<div class="banner">
-    <span>🏮</span>
-    <div><b>デモデータを表示中です。</b> <code>index.html</code> 内の
-    <code>SUPABASE_URL</code> と <code>SUPABASE_ANON_KEY</code> を設定すると、
-    実データ（Supabase）に切り替わります。</div>
-  </div>`;
-}
-
-loadOptions().then(render);
+ 
+(async ()=>{
+  try{ await loadAll(); buildFilterOptions(); rerender(); }
+  catch(e){ el('view-list').innerHTML=`<div class="empty"><h3>読み込みに失敗しました</h3><p>Supabase の URL / anon キー、テーブルの公開設定（RLS）をご確認ください。</p></div>`; console.error(e); }
+})();
 </script>
 </body>
 </html>
+ 

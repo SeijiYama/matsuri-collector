@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>祭り・フェス検索 — 全国のイベントを日付・地域で絞り込む</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eceef3; --paper:#ffffff; --ink:#161c37; --muted:#5f6884;
+    --line:#e1e4ee; --shu:#d43a30; --shu-soft:#fbeae8;
+    --ai:#26326f; --ai-soft:#e9ecf7; --amber:#e0961b; --amber-soft:#fbf1dc;
+    --shadow:0 1px 2px rgba(20,26,55,.05), 0 8px 24px rgba(20,26,55,.06);
+    --display:"Shippori Mincho", serif;
+    --body:"Zen Kaku Gothic New", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:var(--body); color:var(--ink); background:var(--bg);
+    -webkit-font-smoothing:antialiased; line-height:1.6;
+  }
+  a{color:inherit}
+
+  /* ---- header ---- */
+  header{
+    background:
+      radial-gradient(120% 100% at 50% -20%, #1c264d 0%, #141a34 55%, #10152b 100%);
+    color:#f4f2ea; padding:34px 20px 26px;
+  }
+  .wrap{max-width:920px; margin:0 auto}
+  .eyebrow{
+    font-size:12px; letter-spacing:.32em; text-transform:none;
+    color:#c9b47a; font-weight:700; margin:0 0 8px;
+  }
+  h1{
+    font-family:var(--display); font-weight:800; letter-spacing:.02em;
+    font-size:clamp(26px,5vw,40px); margin:0; line-height:1.2;
+  }
+  h1 .accent{color:#f0a93a}
+  .tagline{margin:10px 0 0; color:#b9c0d6; font-size:14px}
+  /* 提灯（ちょうちん）の列＝このページの signature */
+  .lanterns{display:flex; gap:14px; align-items:center; margin:18px 0 0}
+  .lanterns::before,.lanterns::after{content:""; height:1px; flex:1; background:linear-gradient(90deg,transparent,#3a4468)}
+  .lantern{width:9px; height:12px; border-radius:50% 50% 45% 45%; background:var(--shu); box-shadow:0 0 10px rgba(224,58,48,.6); flex:none}
+  .lantern:nth-child(2n){background:var(--amber); box-shadow:0 0 10px rgba(240,169,58,.55)}
+
+  /* ---- filter bar ---- */
+  .filters{
+    position:sticky; top:0; z-index:5;
+    background:rgba(236,238,243,.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .filters .wrap{
+    display:grid; gap:10px 12px; padding:14px 20px;
+    grid-template-columns:repeat(4, minmax(0,1fr)) auto;
+  }
+  .field{display:flex; flex-direction:column; gap:4px; min-width:0}
+  .field.kw{grid-column:1 / -2}
+  .field label{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.04em}
+  select,input[type="date"],input[type="search"]{
+    font-family:var(--body); font-size:14px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:9px;
+    padding:9px 10px; width:100%; height:40px; appearance:none;
+  }
+  input[type="search"]{appearance:auto}
+  select:focus-visible,input:focus-visible{outline:2px solid var(--ai); outline-offset:1px; border-color:var(--ai)}
+  .reset{
+    align-self:end; height:40px; padding:0 14px; white-space:nowrap;
+    font-family:var(--body); font-weight:700; font-size:13px;
+    color:var(--ai); background:var(--ai-soft); border:1px solid transparent;
+    border-radius:9px; cursor:pointer;
+  }
+  .reset:hover{background:#dde2f4}
+
+  /* ---- results ---- */
+  main{max-width:920px; margin:0 auto; padding:20px 20px 64px}
+  .count{font-size:13px; color:var(--muted); margin:6px 2px 16px}
+  .count b{color:var(--ink); font-weight:700}
+
+  .banner{
+    display:flex; gap:10px; align-items:flex-start;
+    background:var(--amber-soft); border:1px solid #eedcae; color:#7a5a12;
+    border-radius:10px; padding:12px 14px; margin:0 0 18px; font-size:13px;
+  }
+  .banner code{background:#fff5e0; padding:1px 5px; border-radius:4px; font-size:12px}
+
+  .list{display:flex; flex-direction:column; gap:12px}
+  .card{
+    display:grid; grid-template-columns:74px 1fr; gap:16px;
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); overflow:hidden; transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{transform:translateY(-2px); box-shadow:0 2px 4px rgba(20,26,55,.06),0 14px 30px rgba(20,26,55,.10)}
+  /* 木札（きふだ）風の日付タグ */
+  .datetag{
+    background:linear-gradient(180deg,var(--shu),#b52e26); color:#fff;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:14px 6px; text-align:center;
+  }
+  .datetag .m{font-size:12px; font-weight:700; opacity:.9}
+  .datetag .d{font-family:var(--display); font-weight:800; font-size:30px; line-height:1}
+  .datetag .w{font-size:11px; margin-top:3px; opacity:.85}
+  .datetag .range{font-size:10px; margin-top:6px; opacity:.9; border-top:1px solid rgba(255,255,255,.35); padding-top:4px}
+  .body{padding:14px 16px 15px; min-width:0}
+  .card h2{font-family:var(--display); font-weight:700; font-size:18px; margin:0 0 6px; line-height:1.35}
+  .meta{display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:0 0 8px}
+  .place{font-size:13px; color:var(--muted)}
+  .chip{font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; line-height:1.5}
+  .chip.cat{background:var(--ai-soft); color:var(--ai)}
+  .chip.reg{background:var(--shu-soft); color:var(--shu)}
+  .desc{font-size:13.5px; color:#31384f; margin:0}
+  .src{display:inline-block; margin-top:9px; font-size:12px; color:var(--ai); font-weight:700; text-decoration:none}
+  .src:hover{text-decoration:underline}
+
+  .empty,.loading{
+    text-align:center; padding:48px 20px; color:var(--muted);
+    background:var(--paper); border:1px dashed var(--line); border-radius:14px;
+  }
+  .empty h3{font-family:var(--display); color:var(--ink); margin:0 0 6px; font-size:18px}
+
+  @media (max-width:640px){
+    .filters .wrap{grid-template-columns:1fr 1fr}
+    .field.kw{grid-column:1 / -1}
+    .reset{grid-column:1 / -1}
+    .card{grid-template-columns:60px 1fr; gap:12px}
+    .datetag .d{font-size:24px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .card{transition:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="eyebrow">全国 祭り・フェス</p>
+    <h1>行事を、<span class="accent">日付</span>と<span class="accent">地域</span>で探す</h1>
+    <p class="tagline">観光に使える祭り・フェス・グルメ・花火の情報を、条件でしぼり込み。</p>
+    <div class="lanterns" aria-hidden="true">
+      <span class="lantern"></span><span class="lantern"></span><span class="lantern"></span>
+      <span class="lantern"></span><span class="lantern"></span>
+    </div>
+  </div>
+</header>
+
+<div class="filters">
+  <div class="wrap">
+    <div class="field">
+      <label for="pref">都道府県</label>
+      <select id="pref"><option value="">すべて</option></select>
+    </div>
+    <div class="field">
+      <label for="cat">種類</label>
+      <select id="cat"><option value="">すべて</option></select>
+    </div>
+    <div class="field">
+      <label for="from">開始日（この日以降）</label>
+      <input type="date" id="from">
+    </div>
+    <div class="field">
+      <label for="to">開始日（この日まで）</label>
+      <input type="date" id="to">
+    </div>
+    <div class="field kw">
+      <label for="kw">キーワード（イベント名・内容・市町村）</label>
+      <input type="search" id="kw" placeholder="例：花火、おどり、帯広 …">
+    </div>
+    <button class="reset" id="reset" type="button">条件をクリア</button>
+  </div>
+</div>
+
+<main>
+  <p class="count" id="count"></p>
+  <div id="banner"></div>
+  <div id="results" class="list" aria-live="polite"></div>
+</main>
+
+<script type="module">
+/* ======================================================================
+   設定：Supabase の情報を入れてください（web/index.html のここだけ）
+   - SUPABASE_URL       : プロジェクトの URL
+   - SUPABASE_ANON_KEY  : anon（公開用）キー ※service_role は絶対に貼らない
+   未設定のままでも、下のデモデータで見た目を確認できます。
+   ====================================================================== */
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+const isConfigured =
+  SUPABASE_URL.startsWith('http') && !SUPABASE_ANON_KEY.startsWith('YOUR_');
+
+/* Supabase ライブラリは「接続設定がある時だけ」読み込む（デモは外部JS不要） */
+let _client = null;
+async function getClient(){
+  if (!isConfigured) return null;
+  if (!_client){
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    _client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+  return _client;
+}
+
+/* デモデータ（Supabase 未設定時のプレビュー用） */
+const SAMPLE = [
+  {title:"越中八尾 おわら風の盆", start_date:"2026-09-01", end_date:"2026-09-03", prefecture:"富山県", city:"富山市", region:"北陸", category:"民謡行事", description:"数千のぼんぼりが灯る八尾の坂の町を、編み笠に浴衣姿の踊り手が三味線・胡弓・太鼓に合わせて流し歩く叙情的な民謡行事。", source_url:"https://www.city.toyama.lg.jp/"},
+  {title:"郡上おどり（おどり納め）", start_date:"2026-09-05", end_date:"2026-09-05", prefecture:"岐阜県", city:"郡上市", region:"中部", category:"盆踊り", description:"日本三大盆踊りのひとつ。全31夜の締めくくり。観客も輪に加わって全10曲を踊る。ユネスコ無形文化遺産。", source_url:"https://www.gujohachiman.com/kanko/"},
+  {title:"とかちマルシェ", start_date:"2026-09-04", end_date:"2026-09-06", prefecture:"北海道", city:"帯広市", region:"北海道", category:"グルメ", description:"十勝最大級の食と音楽の祭典。十勝産食材の店が130店以上、多くが500円以下。入場無料。", source_url:"https://www.city.obihiro.hokkaido.jp/"},
+  {title:"Slow LIVE ’26 in 池上本門寺", start_date:"2026-09-04", end_date:"2026-09-06", prefecture:"東京都", city:"大田区", region:"関東", category:"音楽フェス", description:"「大人のミニフェス」をテーマにした野外ライブ3日間。アコースティック編成中心で音楽と食を楽しむ。", source_url:"https://www.red-hot.ne.jp/slow/"},
+  {title:"開口神社 八朔祭", start_date:"2026-09-05", end_date:"2026-09-06", prefecture:"大阪府", city:"堺市", region:"関西", category:"秋祭り", description:"堺の古社の祭礼。豪華な装飾のふとん太鼓の担ぎ出しが見どころ。境内周辺には多くの露店。", source_url:"https://matcha-jp.com/jp/20105"},
+  {title:"夏まつりあさくら", start_date:"2026-09-05", end_date:"2026-09-05", prefecture:"福岡県", city:"朝倉市", region:"九州", category:"花火大会", description:"約1,000発の花火が上がり、フィナーレは市内唯一の一尺玉10連発。約100の露店が並ぶ。", source_url:"https://www.city.asakura.lg.jp/"},
+  {title:"角館祭りのやま行事", start_date:"2026-09-07", end_date:"2026-09-09", prefecture:"秋田県", city:"仙北市", region:"東北", category:"曳山祭り", description:"約400年の歴史を持つ祭礼。ユネスコ無形文化遺産。曳山同士が激突する「やまぶっつけ」が見どころ。", source_url:"https://www.city.semboku.akita.jp/"},
+];
+
+const el = (id) => document.getElementById(id);
+const WD = ['日','月','火','水','木','金','土'];
+
+/* --- 都道府県・種類のプルダウンを実データから作る --- */
+async function loadOptions(){
+  let rows;
+  if (isConfigured){
+    const c = await getClient();
+    const { data } = await c.from('events').select('prefecture,category');
+    rows = data || [];
+  } else {
+    rows = SAMPLE;
+  }
+  const prefs = [...new Set(rows.map(r=>r.prefecture).filter(Boolean))];
+  const cats  = [...new Set(rows.map(r=>r.category).filter(Boolean))];
+  for (const p of prefs){ el('pref').insertAdjacentHTML('beforeend', `<option>${p}</option>`); }
+  for (const c of cats){ el('cat').insertAdjacentHTML('beforeend', `<option>${c}</option>`); }
+}
+
+/* --- 絞り込み：Supabase 側でクエリ（未設定時はメモリ内で同等の絞り込み） --- */
+async function fetchFiltered(){
+  const pref = el('pref').value, cat = el('cat').value;
+  const from = el('from').value, to = el('to').value;
+  const kw = el('kw').value.trim();
+
+  if (isConfigured){
+    const c = await getClient();
+    let q = c.from('events').select('*');
+    if (pref) q = q.eq('prefecture', pref);
+    if (cat)  q = q.eq('category', cat);
+    if (from) q = q.gte('start_date', from);
+    if (to)   q = q.lte('start_date', to);
+    if (kw){
+      const s = kw.replace(/[(),.]/g,' ');   // or フィルタを壊す文字を除去
+      q = q.or(`title.ilike.%${s}%,description.ilike.%${s}%,city.ilike.%${s}%`);
+    }
+    q = q.order('start_date', { ascending:true });
+    const { data, error } = await q;
+    if (error) throw error;
+    return data;
+  }
+
+  // デモモード
+  return SAMPLE.filter(r=>{
+    if (pref && r.prefecture!==pref) return false;
+    if (cat && r.category!==cat) return false;
+    if (from && r.start_date < from) return false;
+    if (to && r.start_date > to) return false;
+    if (kw){
+      const hay = `${r.title}${r.description}${r.city}`;
+      if (!hay.includes(kw)) return false;
+    }
+    return true;
+  }).sort((a,b)=> a.start_date < b.start_date ? -1 : 1);
+}
+
+function dateTag(r){
+  const d = new Date(r.start_date + 'T00:00:00');
+  const m = d.getMonth()+1, day = d.getDate(), w = WD[d.getDay()];
+  let range = '';
+  if (r.end_date && r.end_date !== r.start_date){
+    const e = new Date(r.end_date + 'T00:00:00');
+    range = `<span class="range">〜${e.getMonth()+1}/${e.getDate()}</span>`;
+  }
+  return `<div class="datetag"><span class="m">${m}月</span><span class="d">${day}</span><span class="w">(${w})</span>${range}</div>`;
+}
+
+function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function card(r){
+  const src = r.source_url ? `<a class="src" href="${esc(r.source_url)}" target="_blank" rel="noopener">公式情報を見る →</a>` : '';
+  const reg = r.region ? `<span class="chip reg">${esc(r.region)}</span>` : '';
+  return `<article class="card">
+    ${dateTag(r)}
+    <div class="body">
+      <h2>${esc(r.title)}</h2>
+      <div class="meta">
+        <span class="place">${esc(r.prefecture||'')} ${esc(r.city||'')}</span>
+        ${r.category?`<span class="chip cat">${esc(r.category)}</span>`:''}
+        ${reg}
+      </div>
+      ${r.description?`<p class="desc">${esc(r.description)}</p>`:''}
+      ${src}
+    </div>
+  </article>`;
+}
+
+async function render(){
+  el('results').innerHTML = `<div class="loading">読み込み中…</div>`;
+  try{
+    const rows = await fetchFiltered();
+    el('count').innerHTML = `該当 <b>${rows.length}</b> 件`;
+    if (!rows.length){
+      el('results').innerHTML = `<div class="empty"><h3>該当するイベントがありません</h3>
+        <p>条件をゆるめてみてください（都道府県や期間を「すべて」に戻すなど）。</p></div>`;
+      return;
+    }
+    el('results').innerHTML = rows.map(card).join('');
+  }catch(e){
+    el('results').innerHTML = `<div class="empty"><h3>読み込みに失敗しました</h3>
+      <p>Supabase の URL / anon キー、テーブルの公開設定（RLS）をご確認ください。</p></div>`;
+    console.error(e);
+  }
+}
+
+/* --- イベント配線 --- */
+let kwTimer;
+el('pref').addEventListener('change', render);
+el('cat').addEventListener('change', render);
+el('from').addEventListener('change', render);
+el('to').addEventListener('change', render);
+el('kw').addEventListener('input', ()=>{ clearTimeout(kwTimer); kwTimer = setTimeout(render, 250); });
+el('reset').addEventListener('click', ()=>{
+  el('pref').value=''; el('cat').value=''; el('from').value=''; el('to').value=''; el('kw').value='';
+  render();
+});
+
+if (!isConfigured){
+  el('banner').innerHTML = `<div class="banner">
+    <span>🏮</span>
+    <div><b>デモデータを表示中です。</b> <code>index.html</code> 内の
+    <code>SUPABASE_URL</code> と <code>SUPABASE_ANON_KEY</code> を設定すると、
+    実データ（Supabase）に切り替わります。</div>
+  </div>`;
+}
+
+loadOptions().then(render);
+</script>
+</body>
+</html>

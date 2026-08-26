@@ -188,6 +188,14 @@ SEED_EVENTS = [
                "火花散る古式日本刀鍛錬の実演、居合斬り、アウトドアナイフショーなどが催される。"
                "毎年スポーツの日の前の土日開催（2026年は10/10・11）。",
                "https://seki-hamono.jp/", 35.4960, 136.9170, genre="グルメ・物産"),
+    make_event("2026-sakura-akimatsuri", "佐倉の秋祭り",
+               "2026-10-09", "2026-10-11", "千葉県", "佐倉市", "関東",
+               "山車祭り",
+               "麻賀多神社の御祭禮を母体に、城下町の4社が合同で行う300年以上の歴史をもつ秋祭り。"
+               "千葉県最大級の麻賀多神社大神輿、江戸型の山車や御神酒所（踊り屋台）が、"
+               "「えっさのこらさのえっさっさ」の掛け声と佐倉囃子に合わせて城下町を3日間練り歩く。"
+               "（例年10月・スポーツの日前の金〜日。2026年の確定日は公式で要確認）",
+               "https://www.sakura-maturi.jp/", 35.7230, 140.2240, genre="祭り・伝統行事"),
 ]
 
 # 熱海海上花火大会（2026年 秋〜冬の各回・熱海市公式より）— 各日を1件ずつ登録
@@ -483,12 +491,27 @@ _WEEKDAY_REGIONS = {
 # その日に巡回する都道府県コード（実行日の曜日で決まる）
 BODIK_PREF_PREFIXES = _WEEKDAY_REGIONS[dt.date.today().weekday()]
 
-# オープンデータから取り込む対象の日付範囲（今日〜N日先）。過去や遠い先は捨てる。
-ODS_WINDOW_DAYS = 45
+# オープンデータから取り込む対象の日付範囲。
+#   下限：開始日が「今日以降」のものだけ（通年の募集告知などを先頭に出さない）
+#   上限：今日〜N日先まで（遠い先は捨てる）
+ODS_WINDOW_DAYS = 180
+
+# 観光イベントらしくない告知を除外するキーワード（タイトルに含むものを弾く）
+_ODS_EXCLUDE = [
+    "募集", "受講", "教室", "講座", "講習", "セミナー", "説明会", "相談",
+    "健診", "検診", "献血", "予防接種", "ワクチン", "無料低額", "納期限",
+    "納付", "定例会", "議会", "委員", "審議", "パブリックコメント", "選挙人",
+    "資格", "試験", "認定", "研修", "スクール", "アカデミー", "大学",
+    "ボランティア", "サポーター", "会員", "受付", "申込", "手続",
+]
+
+def _looks_like_notice(title):
+    t = title or ""
+    return any(k in t for k in _ODS_EXCLUDE)
 
 
 def collect_from_open_data():
-    """自動発見(BODIK) ＋ 手動指定(CSV_SOURCES) のイベントを取り込み、期間で絞る。"""
+    """自動発見(BODIK) ＋ 手動指定(CSV_SOURCES) のイベントを取り込み、期間・内容で絞る。"""
     today = dt.date.today()
     horizon = today + dt.timedelta(days=ODS_WINDOW_DAYS)
 
@@ -499,6 +522,7 @@ def collect_from_open_data():
         sources.extend(discovered)
 
     out = []
+    dropped_notice = 0
     for entry in sources:
         url = entry[0]
         pref = entry[1] if len(entry) > 1 else None
@@ -511,16 +535,22 @@ def collect_from_open_data():
             for e in got:
                 try:
                     s = dt.date.fromisoformat(e["start_date"])
-                    en = dt.date.fromisoformat(e["end_date"])
                 except ValueError:
                     continue
-                if en >= today and s <= horizon:
-                    kept.append(e)
+                # 開始日が今日以降〜horizon のものだけ（過去開始のロングラン告知を除外）
+                if not (today <= s <= horizon):
+                    continue
+                # 観光イベントらしくない告知を除外
+                if _looks_like_notice(e.get("title")):
+                    dropped_notice += 1
+                    continue
+                kept.append(e)
             if got:
-                print(f"[ods] {city or ''} {url.split('/')[-1]}: 取得{len(got)} → 期間内{len(kept)}")
+                print(f"[ods] {city or ''} {url.split('/')[-1]}: 取得{len(got)} → 採用{len(kept)}")
             out.extend(kept)
         except Exception as e:
             print(f"[error] ODS {url}: {e}")
+    print(f"[ods] 告知系として除外: {dropped_notice}件")
     return out
 
 

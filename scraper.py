@@ -14015,7 +14015,25 @@ def _norm_date(s):
 def _rows_from_resource(url):
     """CSV / XLSX のリソースURLを読み込み、[{列名: 値}, ...] の行リストにして返す。"""
     headers = {"User-Agent": "matsuri-collector/1.0 (+contact@example.com)"}
-    raw = requests.get(url, headers=headers, timeout=30).content
+    # 接続10秒・読み込み40秒で分割タイムアウト。応答しないサーバーで長く待たない。
+    resp = requests.get(url, headers=headers, timeout=(10, 40), stream=True)
+    # 巨大ファイルの解析で固まるのを防ぐため、8MBを超えるものはスキップする。
+    MAX_BYTES = 8 * 1024 * 1024
+    clen = resp.headers.get("Content-Length")
+    if clen and clen.isdigit() and int(clen) > MAX_BYTES:
+        print(f"[skip] ファイルが大きすぎます（{int(clen)//1024}KB）: {url}")
+        return []
+    chunks = []
+    size = 0
+    for chunk in resp.iter_content(chunk_size=65536):
+        if not chunk:
+            continue
+        size += len(chunk)
+        if size > MAX_BYTES:
+            print(f"[skip] ダウンロード中に上限超過（{size//1024}KB超）: {url}")
+            return []
+        chunks.append(chunk)
+    raw = b"".join(chunks)
     low = url.lower()
 
     # XLSX（新しいExcel形式）
@@ -14205,23 +14223,36 @@ def _looks_like_notice(title):
 
 def collect_from_open_data():
     """自動発見(BODIK) ＋ 手動指定(CSV_SOURCES) のイベントを取り込み、期間・内容で絞る。"""
+    # 環境変数 DISABLE_BODIK=1 を設定すると、BODIKオープンデータの取得を丸ごとスキップする。
+    # （手作業のシードが充実しているので、収集で固まるリスクを避けたいときに使う）
+    if os.environ.get("DISABLE_BODIK") == "1":
+        print("[ods] DISABLE_BODIK=1 のためオープンデータ収集をスキップしました。")
+        return []
+
     today = dt.date.today()
     horizon = today + dt.timedelta(days=ODS_WINDOW_DAYS)
 
     sources = list(CSV_SOURCES)
     if BODIK_PREF_PREFIXES:
-        discovered = discover_bodik_event_datasets(BODIK_PREF_PREFIXES)
+        try:
+            discovered = discover_bodik_event_datasets(BODIK_PREF_PREFIXES)
+        except Exception as e:
+            print(f"[error] BODIK発見処理に失敗: {e}")
+            discovered = []
         print(f"[bodik] イベント一覧データセットを {len(discovered)} 件発見")
         sources.extend(discovered)
 
     out = []
     dropped_notice = 0
-    for entry in sources:
+    total_src = len(sources)
+    for idx, entry in enumerate(sources, 1):
         url = entry[0]
         pref = entry[1] if len(entry) > 1 else None
         city = entry[2] if len(entry) > 2 else None
         if not url:
             continue
+        # どのファイルを処理中かを毎回ログに出す（次に固まったとき原因URLがすぐ分かる）
+        print(f"[ods] ({idx}/{total_src}) 取得中: {city or ''} {url}", flush=True)
         try:
             got = parse_standard_ods_events(url, pref, city)
             kept = []

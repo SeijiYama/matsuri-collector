@@ -1,6 +1,3 @@
-
-
-Index · HTML
 <!doctype html>
 <html lang="ja">
 <head>
@@ -23,7 +20,7 @@ Index · HTML
   html,body{margin:0}
   body{font-family:var(--body); color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; line-height:1.6}
   a{color:inherit}
- 
+
   header{background:radial-gradient(120% 100% at 50% -20%, #1c264d 0%, #141a34 55%, #10152b 100%); color:#f4f2ea; padding:30px 20px 22px}
   .wrap{max-width:1000px; margin:0 auto}
   .eyebrow{font-size:12px; letter-spacing:.32em; color:#c9b47a; font-weight:700; margin:0 0 8px}
@@ -34,11 +31,11 @@ Index · HTML
   .lanterns::before,.lanterns::after{content:""; height:1px; flex:1; background:linear-gradient(90deg,transparent,#3a4468)}
   .lantern{width:9px; height:12px; border-radius:50% 50% 45% 45%; background:var(--shu); box-shadow:0 0 10px rgba(224,58,48,.6); flex:none}
   .lantern:nth-child(2n){background:var(--amber); box-shadow:0 0 10px rgba(240,169,58,.55)}
- 
+
   .tabs{display:flex; gap:6px; max-width:1000px; margin:0 auto; padding:0 20px; transform:translateY(14px)}
   .tab{font-family:var(--body); font-weight:700; font-size:14px; color:#c3cae0; background:#1a2140; border:1px solid #2b355e; border-bottom:none; border-radius:10px 10px 0 0; padding:10px 18px; cursor:pointer}
   .tab.active{color:var(--ink); background:var(--bg); border-color:var(--line)}
- 
+
   .filters{background:rgba(236,238,243,.96); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:6}
   .filters .wrap{display:grid; gap:10px 12px; padding:16px 20px 14px; grid-template-columns:repeat(4, minmax(0,1fr)) auto}
   .field{display:flex; flex-direction:column; gap:4px; min-width:0}
@@ -48,13 +45,17 @@ Index · HTML
   select:focus-visible,input:focus-visible{outline:2px solid var(--ai); outline-offset:1px; border-color:var(--ai)}
   .reset{align-self:end; height:40px; padding:0 14px; white-space:nowrap; font-family:var(--body); font-weight:700; font-size:13px; color:var(--ai); background:var(--ai-soft); border:1px solid transparent; border-radius:9px; cursor:pointer}
   .reset:hover{background:#dde2f4}
- 
+
   main{max-width:1000px; margin:0 auto; padding:18px 20px 64px}
-  .count{font-size:13px; color:var(--muted); margin:4px 2px 14px}
+  .listbar{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin:4px 2px 12px}
+  .count{font-size:13px; color:var(--muted); margin:0}
   .count b{color:var(--ink); font-weight:700}
+  .scope{display:inline-flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:var(--paper)}
+  .scope button{font-family:var(--body); font-weight:700; font-size:12px; color:var(--muted); background:transparent; border:none; padding:8px 12px; cursor:pointer}
+  .scope button.active{background:var(--ai); color:#fff}
   .banner{display:flex; gap:10px; align-items:flex-start; background:var(--amber-soft); border:1px solid #eedcae; color:#7a5a12; border-radius:10px; padding:12px 14px; margin:0 0 16px; font-size:13px}
   .banner code{background:#fff5e0; padding:1px 5px; border-radius:4px; font-size:12px}
- 
+
   .list{display:flex; flex-direction:column; gap:12px}
   .card{display:grid; grid-template-columns:74px 1fr; gap:16px; background:var(--paper); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
   .datetag{color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 6px; text-align:center}
@@ -71,7 +72,7 @@ Index · HTML
   .desc{font-size:13px; color:#31384f; margin:0}
   .src{display:inline-block; margin-top:8px; font-size:12px; color:var(--ai); font-weight:700; text-decoration:none}
   .src:hover{text-decoration:underline}
- 
+
   .calhead{display:flex; align-items:center; justify-content:space-between; margin:2px 0 12px}
   .calnav{display:flex; gap:8px; align-items:center}
   .navbtn{width:38px; height:38px; border-radius:9px; border:1px solid var(--line); background:var(--paper); font-size:16px; cursor:pointer; color:var(--ink)}
@@ -81,7 +82,7 @@ Index · HTML
   .legend{display:flex; flex-wrap:wrap; gap:6px 12px; margin:0 0 12px; font-size:12px; color:var(--muted)}
   .legend span{display:inline-flex; align-items:center; gap:5px}
   .dot{width:9px; height:9px; border-radius:50%; flex:none}
- 
+
   .weekbar{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:6px}
   .weekbar div{text-align:center; font-size:12px; font-weight:700; color:var(--muted); padding:4px 0}
   .weekbar div:first-child{color:var(--shu)} .weekbar div:last-child{color:var(--ai)}
@@ -95,7 +96,7 @@ Index · HTML
   .cell .cnt{font-size:10px; font-weight:700; color:#fff; background:var(--ai); border-radius:999px; padding:0 6px}
   .cell .ev{display:flex; align-items:center; gap:4px; font-size:11px; line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .cell .more{font-size:10px; color:var(--muted); margin-top:auto}
- 
+
   .weekgrid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
   .wcol{background:var(--paper); border:1px solid var(--line); border-radius:10px; min-height:340px; display:flex; flex-direction:column}
   .wcol.today{border-color:var(--shu)}
@@ -103,13 +104,13 @@ Index · HTML
   .wcol .wc-body{padding:6px; display:flex; flex-direction:column; gap:5px; overflow:auto}
   .wev{font-size:11px; line-height:1.35; padding:5px 7px; border-radius:7px; background:#f6f7fa; border-left:3px solid var(--ai); cursor:pointer}
   .wev:hover{background:var(--ai-soft)}
- 
+
   .daydetail{margin-top:18px}
   .daydetail h2{font-family:var(--display); font-size:18px; margin:0 0 10px}
   .empty{text-align:center; padding:40px 20px; color:var(--muted); background:var(--paper); border:1px dashed var(--line); border-radius:14px}
   .empty h3{font-family:var(--display); color:var(--ink); margin:0 0 6px; font-size:18px}
   .hidden{display:none}
- 
+
   @media (max-width:720px){
     .filters .wrap{grid-template-columns:1fr 1fr}
     .field.kw{grid-column:1 / -1}
@@ -130,13 +131,13 @@ Index · HTML
     <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
   </div>
 </header>
- 
+
 <div class="tabs" role="tablist">
   <button class="tab active" data-view="list" role="tab">一覧</button>
   <button class="tab" data-view="month" role="tab">月カレンダー</button>
   <button class="tab" data-view="week" role="tab">週カレンダー</button>
 </div>
- 
+
 <div class="filters">
   <div class="wrap">
     <div class="field"><label for="region">地域</label><select id="region"><option value="">すべて</option></select></div>
@@ -147,13 +148,21 @@ Index · HTML
     <button class="reset" id="reset" type="button">条件をクリア</button>
   </div>
 </div>
- 
+
 <main>
   <div id="banner"></div>
-  <p class="count" id="count"></p>
- 
-  <section id="view-list"></section>
- 
+
+  <section id="view-list">
+    <div class="listbar">
+      <p class="count" id="count"></p>
+      <div class="scope" id="scope" role="group" aria-label="表示期間">
+        <button data-scope="upcoming" class="active" type="button">今日以降</button>
+        <button data-scope="all" type="button">すべて</button>
+      </div>
+    </div>
+    <div id="list-body"></div>
+  </section>
+
   <section id="view-month" class="hidden">
     <div class="calhead">
       <div class="calnav"><button class="navbtn" id="m-prev">‹</button><div class="caltitle" id="m-title"></div><button class="navbtn" id="m-next">›</button></div>
@@ -164,7 +173,7 @@ Index · HTML
     <div class="grid" id="m-grid"></div>
     <div class="daydetail" id="m-detail"></div>
   </section>
- 
+
   <section id="view-week" class="hidden">
     <div class="calhead">
       <div class="calnav"><button class="navbtn" id="w-prev">‹</button><div class="caltitle" id="w-title"></div><button class="navbtn" id="w-next">›</button></div>
@@ -175,11 +184,11 @@ Index · HTML
     <div class="daydetail" id="w-detail"></div>
   </section>
 </main>
- 
+
 <script type="module">
 const SUPABASE_URL = 'https://lvriwfdhwvmerqzkykda.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_Ab8PWTFJNqq7TZQlJbmWbw_0HuApiaD';
- 
+
 const isConfigured = SUPABASE_URL.startsWith('http') && !SUPABASE_ANON_KEY.startsWith('YOUR_');
 let _client = null;
 async function getClient(){
@@ -187,14 +196,14 @@ async function getClient(){
   if(!_client){ const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2'); _client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
   return _client;
 }
- 
+
 const GENRE_COLORS = {
   "祭り・伝統行事":"#d43a30","音楽・フェス":"#3a4fb0","花火":"#e0961b","グルメ・物産":"#2f8f6b",
   "アート・展示":"#8a5cc4","スポーツ":"#1f9bb0","映画・演劇":"#c0508f","季節・自然":"#6a9a3a",
   "選挙":"#5b6b8c","その他":"#8a8f9c"
 };
 const gcolor = g => GENRE_COLORS[g] || GENRE_COLORS["その他"];
- 
+
 const SAMPLE = [
   {title:"越中八尾 おわら風の盆",start_date:"2026-09-01",end_date:"2026-09-03",region:"北陸",prefecture:"富山県",city:"富山市",genre:"祭り・伝統行事",category:"民謡行事",description:"叙情的な民謡行事。",source_url:"https://www.city.toyama.lg.jp/"},
   {title:"とかちマルシェ",start_date:"2026-09-04",end_date:"2026-09-06",region:"北海道",prefecture:"北海道",city:"帯広市",genre:"グルメ・物産",category:"グルメ",description:"十勝の食と音楽。",source_url:"https://www.city.obihiro.hokkaido.jp/"},
@@ -203,34 +212,35 @@ const SAMPLE = [
   {title:"沖縄全島エイサーまつり",start_date:"2026-09-04",end_date:"2026-09-06",region:"沖縄",prefecture:"沖縄県",city:"沖縄市",genre:"祭り・伝統行事",category:"エイサー",description:"旧盆明けの一大行事。",source_url:"https://www.zentoeisa.com/"},
   {title:"角館祭りのやま行事",start_date:"2026-09-07",end_date:"2026-09-09",region:"東北",prefecture:"秋田県",city:"仙北市",genre:"祭り・伝統行事",category:"曳山祭り",description:"ユネスコ無形文化遺産。",source_url:"https://www.city.semboku.akita.jp/"},
 ];
- 
+
 const el = id => document.getElementById(id);
 const WD = ['日','月','火','水','木','金','土'];
 const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const todayISO = iso(new Date());
 const parseD = s => new Date(s+'T00:00:00');
 function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
- 
+
 let ALL = [];
 let view = 'list';
+let listScope = 'upcoming';   // 'upcoming' = 今日以降 / 'all' = すべて
 let monthCursor = new Date(); monthCursor.setDate(1);
 let weekStart = startOfWeek(new Date());
 let selDay = null;
- 
+
 function startOfWeek(d){ const x=new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate()-x.getDay()); return x; }
- 
+
 async function loadAll(){
   if(!isConfigured){ ALL = SAMPLE.slice(); return; }
   const c = await getClient();
-  const from = new Date(); from.setDate(from.getDate()-31);
-  const to   = new Date(); to.setDate(to.getDate()+400);
+  const from = new Date(); from.setDate(from.getDate()-40);
+  const to   = new Date(); to.setDate(to.getDate()+800);
   const { data, error } = await c.from('events').select('*')
     .gte('end_date', iso(from)).lte('start_date', iso(to))
-    .order('start_date',{ascending:true}).limit(5000);
+    .order('start_date',{ascending:true}).limit(10000);
   if(error) throw error;
   ALL = data || [];
 }
- 
+
 function activeFilters(){
   return { region:el('region').value, pref:el('pref').value, city:el('city').value, genre:el('genre').value, kw:el('kw').value.trim() };
 }
@@ -242,8 +252,9 @@ function pass(e,f){
   if(f.kw){ const hay=`${e.title||''}${e.description||''}${e.city||''}`; if(!hay.includes(f.kw)) return false; }
   return true;
 }
-function eventsOnDay(dayISO,f){ return ALL.filter(e => e.start_date<=dayISO && (e.end_date||e.start_date)>=dayISO && pass(e,f)); }
- 
+const endOf = e => e.end_date || e.start_date;
+function eventsOnDay(dayISO,f){ return ALL.filter(e => e.start_date<=dayISO && endOf(e)>=dayISO && pass(e,f)); }
+
 function buildFilterOptions(){
   const regions=[...new Set(ALL.map(e=>e.region).filter(Boolean))].sort();
   const genres =[...new Set(ALL.map(e=>e.genre).filter(Boolean))];
@@ -263,7 +274,7 @@ function refreshCityOptions(){
   const list=[...new Set(ALL.filter(e=>(!region||e.region===region)&&(!pref||e.prefecture===pref)).map(e=>e.city).filter(Boolean))].sort();
   el('city').innerHTML='<option value="">すべて</option>'+list.map(cc=>`<option>${esc(cc)}</option>`).join('');
 }
- 
+
 function dateTag(e){
   const d=parseD(e.start_date), m=d.getMonth()+1, day=d.getDate(), w=WD[d.getDay()];
   let range=''; if(e.end_date && e.end_date!==e.start_date){ const en=parseD(e.end_date); range=`<span class="range">〜${en.getMonth()+1}/${en.getDate()}</span>`; }
@@ -279,18 +290,23 @@ function card(e){
     ${e.description?`<p class="desc">${esc(e.description)}</p>`:''}${src}
   </div></article>`;
 }
- 
+
 function renderList(){
   const f=activeFilters();
-  const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-                .sort((a,b)=> a.start_date<b.start_date?-1:(a.start_date>b.start_date?1:0));
-  el('count').innerHTML=`今日以降のイベント <b>${rows.length}</b> 件`;
-  el('view-list').innerHTML = rows.length ? `<div class="list">${rows.map(card).join('')}</div>`
+  let rows=ALL.filter(e=>pass(e,f));
+  if(listScope==='upcoming'){
+    // 「今日以降」＝まだ終わっていない（開催中も含む）イベント
+    rows=rows.filter(e=> endOf(e) >= todayISO );
+  }
+  rows.sort((a,b)=> a.start_date<b.start_date?-1:(a.start_date>b.start_date?1:0));
+  const label = listScope==='upcoming' ? '今日以降のイベント' : 'すべてのイベント';
+  el('count').innerHTML=`${label} <b>${rows.length}</b> 件`;
+  el('list-body').innerHTML = rows.length ? `<div class="list">${rows.map(card).join('')}</div>`
     : `<div class="empty"><h3>該当するイベントがありません</h3><p>条件をゆるめてみてください。</p></div>`;
 }
- 
+
 function legendHTML(){ return Object.keys(GENRE_COLORS).map(g=>`<span><i class="dot" style="background:${GENRE_COLORS[g]}"></i>${g}</span>`).join(''); }
- 
+
 function renderMonth(){
   const f=activeFilters();
   el('legend').innerHTML=legendHTML();
@@ -309,11 +325,9 @@ function renderMonth(){
   }
   el('m-grid').innerHTML=html;
   el('m-grid').querySelectorAll('.cell').forEach(c=>c.addEventListener('click',()=>{ selDay=c.dataset.day; renderMonth(); renderDayDetail('m-detail'); }));
-  const total=ALL.filter(e=>pass(e,f)).length;
-  el('count').innerHTML=`条件に一致 <b>${total}</b> 件（カレンダーは期間を自由に移動できます）`;
   if(selDay) renderDayDetail('m-detail');
 }
- 
+
 function renderWeek(){
   const f=activeFilters();
   el('legend-w').innerHTML=legendHTML();
@@ -329,10 +343,8 @@ function renderWeek(){
   }
   el('w-grid').innerHTML=html;
   el('w-grid').querySelectorAll('.wev').forEach(x=>x.addEventListener('click',()=>{ selDay=x.dataset.day; renderDayDetail('w-detail'); el('w-detail').scrollIntoView({behavior:'smooth',block:'start'}); }));
-  const total=ALL.filter(e=>pass(e,f)).length;
-  el('count').innerHTML=`条件に一致 <b>${total}</b> 件`;
 }
- 
+
 function renderDayDetail(target){
   if(!selDay){ el(target).innerHTML=''; return; }
   const f=activeFilters();
@@ -341,7 +353,7 @@ function renderDayDetail(target){
   el(target).innerHTML=`<h2>${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${WD[d.getDay()]}) のイベント <span style="color:var(--muted);font-size:14px">${evs.length}件</span></h2>`
     + (evs.length?`<div class="list">${evs.map(card).join('')}</div>`:`<div class="empty"><p>この日のイベントはありません。</p></div>`);
 }
- 
+
 function switchView(v){
   view=v;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
@@ -351,7 +363,7 @@ function switchView(v){
   rerender();
 }
 function rerender(){ if(view==='list') renderList(); else if(view==='month') renderMonth(); else renderWeek(); }
- 
+
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>switchView(t.dataset.view)));
 el('region').addEventListener('change',()=>{ refreshPrefOptions(); refreshCityOptions(); rerender(); });
 el('pref').addEventListener('change',()=>{ refreshCityOptions(); rerender(); });
@@ -359,23 +371,28 @@ el('city').addEventListener('change',rerender);
 el('genre').addEventListener('change',rerender);
 let kwT; el('kw').addEventListener('input',()=>{ clearTimeout(kwT); kwT=setTimeout(rerender,220); });
 el('reset').addEventListener('click',()=>{ el('region').value='';el('pref').value='';el('city').value='';el('genre').value='';el('kw').value=''; refreshPrefOptions(); refreshCityOptions(); rerender(); });
- 
+
+el('scope').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  listScope=b.dataset.scope;
+  el('scope').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
+  renderList();
+}));
+
 el('m-prev').addEventListener('click',()=>{ monthCursor.setMonth(monthCursor.getMonth()-1); renderMonth(); });
 el('m-next').addEventListener('click',()=>{ monthCursor.setMonth(monthCursor.getMonth()+1); renderMonth(); });
 el('m-today').addEventListener('click',()=>{ monthCursor=new Date(); monthCursor.setDate(1); selDay=todayISO; renderMonth(); });
 el('w-prev').addEventListener('click',()=>{ weekStart.setDate(weekStart.getDate()-7); renderWeek(); });
 el('w-next').addEventListener('click',()=>{ weekStart.setDate(weekStart.getDate()+7); renderWeek(); });
 el('w-today').addEventListener('click',()=>{ weekStart=startOfWeek(new Date()); renderWeek(); });
- 
+
 if(!isConfigured){
   el('banner').innerHTML=`<div class="banner"><span>🏮</span><div><b>デモデータを表示中です。</b> <code>index.html</code> の <code>SUPABASE_URL</code> と <code>SUPABASE_ANON_KEY</code> を設定すると実データに切り替わります。</div></div>`;
 }
- 
+
 (async ()=>{
   try{ await loadAll(); buildFilterOptions(); rerender(); }
-  catch(e){ el('view-list').innerHTML=`<div class="empty"><h3>読み込みに失敗しました</h3><p>Supabase の URL / anon キー、テーブルの公開設定（RLS）をご確認ください。</p></div>`; console.error(e); }
+  catch(e){ el('list-body').innerHTML=`<div class="empty"><h3>読み込みに失敗しました</h3><p>Supabase の URL / anon キー、テーブルの公開設定（RLS）をご確認ください。</p></div>`; console.error(e); }
 })();
 </script>
 </body>
 </html>
- 

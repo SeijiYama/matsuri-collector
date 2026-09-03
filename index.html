@@ -234,11 +234,18 @@ async function loadAll(){
   const c = await getClient();
   const from = new Date(); from.setDate(from.getDate()-40);
   const to   = new Date(); to.setDate(to.getDate()+800);
-  const { data, error } = await c.from('events').select('*')
-    .gte('end_date', iso(from)).lte('start_date', iso(to))
-    .order('start_date',{ascending:true}).limit(10000);
-  if(error) throw error;
-  ALL = data || [];
+  const PAGE = 1000;               // Supabase は 1 回のクエリで最大 1000 行しか返さない
+  let all = [];
+  for(let offset=0; offset<100000; offset+=PAGE){
+    const { data, error } = await c.from('events').select('*')
+      .gte('end_date', iso(from)).lte('start_date', iso(to))
+      .order('start_date',{ascending:true})
+      .range(offset, offset+PAGE-1);   // 1000 件ずつページングして全件取得する
+    if(error) throw error;
+    all = all.concat(data||[]);
+    if(!data || data.length < PAGE) break;   // 最後のページに達したら終了
+  }
+  ALL = all;
 }
 
 function activeFilters(){

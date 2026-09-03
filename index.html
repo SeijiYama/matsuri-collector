@@ -282,7 +282,7 @@ function card(e){
  
 function renderList(){
   const f=activeFilters();
-  const rows=ALL.filter(e=>(e.end_date||e.start_date)>=todayISO && pass(e,f))
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
                 .sort((a,b)=> a.start_date<b.start_date?-1:(a.start_date>b.start_date?1:0));
   el('count').innerHTML=`今日以降のイベント <b>${rows.length}</b> 件`;
   el('view-list').innerHTML = rows.length ? `<div class="list">${rows.map(card).join('')}</div>`
